@@ -30,10 +30,15 @@ build: test readme icons
 	cd $(UNPACKED) && zip -rq -X ../../$(PACKAGE) .
 	@echo "Built $(PACKAGE)"
 
+RELEASE_NOTES := $(DIST)/release-$(VERSION).txt
+
 release: build
+	node scripts/draft-release-notes.js $(VERSION)
+	$${EDITOR:-vi} $(RELEASE_NOTES)
 	git tag v$(VERSION)
+	git push origin HEAD
 	git push origin v$(VERSION)
-	gh release create v$(VERSION) $(PACKAGE) --title "v$(VERSION)" --generate-notes
+	gh release create v$(VERSION) $(PACKAGE) --title "v$(VERSION)" --target $$(git rev-parse HEAD) --notes-file $(RELEASE_NOTES)
 
 clean:
 	rm -rf $(DIST)

@@ -47,11 +47,34 @@ Plain `Makefile`, no npm dependencies (uses Node's built-in test runner).
   `dist/unpacked/` (loadable in Chrome via "Load unpacked") plus a zipped
   `dist/watchsooner-<version>.zip`.
 - `make test` — unit tests only.
-- `make release` — builds, then `git tag v<version>`, pushes the tag, and creates a
-  GitHub release with the zip attached via `gh release create`. Bump the version in
-  `project.md` yourself first (there's no auto-bump in this Makefile — that's
-  different from the global `p vup` workflow, which is unrelated to this repo's own
-  build system).
+- `make release` — builds, then:
+  1. `node scripts/draft-release-notes.js <version>` writes
+     `dist/release-<version>.txt` prefilled with the CHANGELOG.md `[x]` entries
+     logged since the last `[!] **VERSION ... RELEASE**` marker (skips writing if
+     that file already exists, so a retry after a failed release keeps your edits).
+  2. Opens it in `$EDITOR` (falls back to `vi`) so you can write/adjust the release
+     note before it's published — the recipe blocks until you close the editor.
+  3. `git tag v<version>`, pushes `HEAD` (the current branch) and the tag, and
+     creates a GitHub release with the zip attached via
+     `gh release create --target $(git rev-parse HEAD) --notes-file dist/release-<version>.txt`
+     — the edited file becomes the GitHub release's notes.
+
+  Bump the version in `project.md` yourself first (there's no auto-bump in this
+  Makefile — that's different from the global `p vup` workflow, which is unrelated
+  to this repo's own build system).
+
+  The explicit branch push and `--target` aren't optional flourishes: the first
+  `make release` run only pushed the tag, never `main` itself, so `origin` had no
+  branches at all — just a dangling tag. `gh release create` then failed with
+  `HTTP 422: Invalid target_commitish` because GitHub had no default branch to
+  resolve the tag against. If you ever see that error again, check
+  `git ls-remote --heads origin` — an empty result means the branch was never
+  pushed.
+
+  Also: `git tag v<version>` isn't idempotent — if a release attempt fails after
+  the tag is created, re-running `make release` for the *same* version will fail at
+  `git tag` with "tag already exists". Bump the version again rather than trying to
+  reuse/force the old tag.
 - `make clean` — removes `dist/`.
 
 Chrome requires raster icons (no SVG) for the manifest, so the build renders

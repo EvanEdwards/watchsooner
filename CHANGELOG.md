@@ -4,6 +4,8 @@
 
 ## 2026-09
 
+- [x] `make release` now opens an editor on dist/release-<version>.txt, prefilled from CHANGELOG.md ✅ 2026-09-28
+- [x] Fixed `make release`: push the branch itself, not just the tag, and pass an explicit --target to gh ✅ 2026-09-28
 - [x] README.md generator now substitutes {{key}}/{{nested.key}} placeholders from project.md frontmatter ✅ 2026-09-28
 - [!] **VERSION 0.0.2 RELEASE**
 - [x] Removed dependency on another extension's --yt-spec-* CSS vars; added --wsoon-* theme vars ✅ 2026-09-28
