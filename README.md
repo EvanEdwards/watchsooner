@@ -62,6 +62,16 @@ Other things that make will do as part of the build (assuming tests pass):
 
 - Update README.md to contain the Markdown from project.md (omitting the YAML front matter).
 
+## Dependencies
+
+I develop on Linux.  YMMV.
+
+- `make` - runs the build system.
+- `node` - runs the tests and build/release scripts (no npm packages required).
+- `inkscape` - renders the extension's PNG icons from `assets/identity/icon.svg`.
+- `zip` - packages `dist/unpacked` into the distributable `.zip`.
+- `git` - tags and pushes releases.
+- `gh` - creates the GitHub release (`make release` only).
 
 
 ## Files
