@@ -4,6 +4,9 @@
 
 ## 2026-09
 
+- [x] Renamed percent-filter.js to feature-filter-percent.js; added feature-playlist-height.js ✅ 2026-09-28
+- [x] Fixed height-toggle leak: scope the max-height override to #playlist, not all of ytd-watch-flexy ✅ 2026-09-28
+- [x] Added a "Show all" toggle that expands the Playlists panel to its full height ✅ 2026-09-28
 - [!] **VERSION 0.1.1 RELEASE**  ✅ 2026-09-28
 - [x] `make release` now opens an editor on dist/release-<version>.txt, prefilled from CHANGELOG.md ✅ 2026-09-28
 - [x] Fixed `make release`: push the branch itself, not just the tag, and pass an explicit --target to gh ✅ 2026-09-28

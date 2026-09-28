@@ -34,7 +34,7 @@ Features that modify the Playlist view and Playlists panel when watching videos.
 
 Features that only modify the Playlist panel when watching videos.
 
-- (TODO) A toggle height button that allows the playlist panel to be `height: auto` so it shows all videos in the list, scrolling the page rather than the tiny scroll within the panel itself. 
+- A "Show all" toggle button that expands the playlist panel to `height: auto` so it shows all videos in the list, scrolling the page rather than the tiny scroll within the panel itself.
 
 Features that only modify the playlist view: 
 

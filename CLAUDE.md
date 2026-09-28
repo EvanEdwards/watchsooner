@@ -8,12 +8,18 @@ not the bottom.
 
 ## Layout
 
-- `src/percent-filter.js` — pure DOM-reading/filter logic (UMD-ish: `module.exports`
-  under Node, `window.WatchSoonerFilter` in the browser). Kept dependency-free so it
-  loads as a plain `<script>` via manifest `content_scripts`, in this order.
-- `src/content.js` — DOM wiring: builds the watched-% range slider, mounts it above
-  the Watch Later list and above the Playlists panel, filters items via
-  `MutationObserver` + YouTube's `yt-navigate-finish` SPA navigation event.
+- `src/feature-filter-percent.js` — pure DOM-reading/filter logic for the watched-%
+  slider (UMD-ish: `module.exports` under Node, `window.WatchSoonerFilter` in the
+  browser). Kept dependency-free so it loads as a plain `<script>`.
+- `src/feature-playlist-height.js` — the Playlists panel's "Show all" height toggle
+  (same UMD-ish pattern, `window.WatchSoonerHeightToggle`). `applyHeightOverride` is
+  pure enough to unit test with mock `style` objects (see
+  `test/feature-playlist-height.test.js`); `createHeightToggle` builds the actual
+  `<button>` and is DOM-only, like `content.js`.
+- `src/content.js` — DOM wiring only: mounts both features' controls above the Watch
+  Later list and above the Playlists panel, re-filters items via `MutationObserver`
+  + YouTube's `yt-navigate-finish` SPA navigation event. Both feature scripts must
+  load before this one (see `src/manifest.json`'s `content_scripts.js` order).
 - `src/slider.css` — styling for the injected control (dual-thumb via two overlaid
   native `<input type="range">`, plus a `.watchsooner-filter__range` div positioned
   by `content.js` to show the filled portion between the two thumbs). Uses only its
@@ -25,9 +31,10 @@ not the bottom.
   `#ff0033` — both requested as fixed colors, not theme-dependent.
 - `src/manifest.json` — MV3 manifest template; `version` is `0.0.0` here and gets
   overwritten at build time from `project.md`'s frontmatter version.
-- `test/percent-filter.test.js` — Node's built-in test runner (`node --test`),
-  no external test framework/deps. Only the pure logic module is unit tested;
-  `content.js`'s DOM wiring is not (see Known gaps).
+- `test/feature-filter-percent.test.js`, `test/feature-playlist-height.test.js` —
+  Node's built-in test runner (`node --test`), no external test framework/deps.
+  Only the pure logic in each feature module is unit tested; `content.js`'s DOM
+  wiring and `createHeightToggle`'s button creation are not (see Known gaps).
 - `scripts/read-project-version.js` — reads `version:` out of `project.md`
   frontmatter for the Makefile.
 - `scripts/build-readme.js` — strips `project.md`'s YAML frontmatter, substitutes
@@ -82,9 +89,8 @@ Chrome requires raster icons (no SVG) for the manifest, so the build renders
 
 ## Feature status (see `project.md` for the authoritative list)
 
-- Watched-percent range slider — **done and verified live** (loaded as an unpacked
-  extension and exercised on youtube.com in this session; see below). Lives in
-  `src/content.js` + `src/percent-filter.js`. Mounted on:
+- Watched-percent range slider — **done and verified live**. Lives in
+  `src/content.js` + `src/feature-filter-percent.js`. Mounted on:
   - the Watch Later / any playlist page (`ytd-playlist-video-list-renderer` /
     `ytd-playlist-video-renderer`)
   - the Playlists panel next to the video player
@@ -93,7 +99,11 @@ Chrome requires raster icons (no SVG) for the manifest, so the build renders
   Thumbs can cross freely; `content.js` sorts the two input values on every change
   so "leftmost to rightmost" always defines the kept range regardless of which
   `<input>` is nominally min/max. Full range (0–100) displays as "Any".
-- Playlist panel `height: auto` toggle — not started (still TODO in `project.md`).
+- Playlist panel "Show all" height toggle — **done and verified live**. Lives in
+  `src/feature-playlist-height.js`, appended into the same control row as the
+  panel's watched-% slider (see `heightToggle: true` on that `TARGETS` entry in
+  `content.js`). See "Playlist panel height-toggle scoping" below for how it works
+  and a bug that was fixed in it.
 - "Fetch All" preload button — proposed only, not started.
 
 ## Watched-percent DOM lookup (verified live 2026-09-28)
@@ -113,12 +123,38 @@ Confirmed live on the Watch Later page and the Playlists panel:
   is why `getWatchedPercent` treats "no overlay found" as 0%, not "unknown/show
   anyway".
 
-`percent-filter.js`'s `getWatchedPercent` now checks `#progress` first, then falls
-back to scanning `<div>` children of either overlay tag name for one whose inline
-width matches `NN%` or `NN.N%`. If YouTube changes this markup again, re-run the
-same live-inspection approach (walk `querySelectorAll('*')` recursively including
-`.shadowRoot`, looking for tags/divs with percent-based inline widths) rather than
-guessing from cached knowledge — this class name/tag has already changed once.
+`feature-filter-percent.js`'s `getWatchedPercent` now checks `#progress` first,
+then falls back to scanning `<div>` children of either overlay tag name for one
+whose inline width matches `NN%` or `NN.N%`. If YouTube changes this markup again,
+re-run the same live-inspection approach (walk `querySelectorAll('*')` recursively
+including `.shadowRoot`, looking for tags/divs with percent-based inline widths)
+rather than guessing from cached knowledge — this class name/tag has already
+changed once.
+
+## Playlist panel height-toggle scoping (verified live 2026-09-28)
+
+YouTube caps the Playlists panel's height via a CSS custom property,
+`--ytd-watch-flexy-panel-max-height`, and it's normally *set* on the shared
+`ytd-watch-flexy` ancestor that wraps the whole watch page. A first version of the
+height toggle overrode that property **on `ytd-watch-flexy` itself** to expand the
+panel — which worked for the panel, but also silently changed every other box that
+reads the same shared var (ads, related-video boxes, etc.), since CSS custom
+properties cascade to all descendants of wherever they're set.
+
+Fix: override the property **on the panel element itself**
+(`ytd-playlist-panel-renderer#playlist`, i.e. the `panel` argument already passed
+to `applyHeightOverride`), not on `ytd-watch-flexy`. Confirmed live: setting it on
+`#playlist` expands only that panel while `ytd-watch-flexy`'s own copy of the var
+stays untouched. This also simplified the restore path — the panel doesn't own
+that property naturally, so a plain `removeProperty` correctly falls back to
+inheriting `ytd-watch-flexy`'s live-managed value, with no need to manually cache
+and restore an "original" value (an earlier version tried that and it worked, but
+was unnecessary complexity once the fix was scoped correctly).
+
+If a future feature needs to override a YouTube-managed CSS custom property, scope
+the override to the narrowest element that actually needs it, not a shared
+ancestor — the leak here was subtle precisely because the panel itself looked
+correct while other boxes quietly changed size.
 
 ## Known gaps / things to verify next session
 

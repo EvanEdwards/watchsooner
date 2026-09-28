@@ -97,3 +97,21 @@
   white-space: nowrap;
   min-width: 62px;
 }
+
+.watchsooner-height-toggle {
+  margin-left: auto;
+  padding: 4px 10px;
+  font-family: inherit;
+  font-size: 12px;
+  color: var(--wsoon-text);
+  background: transparent;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.watchsooner-height-toggle--on {
+  color: #fff;
+  background: #ff0033;
+  border-color: #ff0033;
+}

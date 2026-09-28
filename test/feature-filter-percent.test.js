@@ -1,6 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { extractPercentFromStyle, getWatchedPercent, shouldShow } = require('../src/percent-filter.js');
+const { extractPercentFromStyle, getWatchedPercent, shouldShow } = require('../src/feature-filter-percent.js');
 
 test('extractPercentFromStyle parses plain percentages', () => {
   assert.equal(extractPercentFromStyle('42%'), 42);

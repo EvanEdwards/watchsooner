@@ -1,8 +1,10 @@
-// Adds a "watched %" range filter to the Watch Later playlist view and to
-// the Playlists panel shown next to the video player. Relies on
-// src/percent-filter.js (window.WatchSoonerFilter) being loaded first.
+// Mounts the watched-% range filter (src/feature-filter-percent.js) and the
+// playlist panel's height toggle (src/feature-playlist-height.js) into the
+// Watch Later playlist view and the Playlists panel. Both feature scripts must
+// be loaded before this one.
 (function () {
   const { getWatchedPercent, shouldShow } = window.WatchSoonerFilter;
+  const { createHeightToggle } = window.WatchSoonerHeightToggle;
 
   const TARGETS = [
     {
@@ -14,6 +16,7 @@
       mountId: 'watchsooner-controls-panel',
       containerSelector: 'ytd-playlist-panel-renderer #items',
       itemSelector: 'ytd-playlist-panel-video-renderer',
+      heightToggle: true,
     },
   ];
 
@@ -69,6 +72,14 @@
       applyFilter(container, target.itemSelector, min, max)
     );
     element.id = target.mountId;
+
+    if (target.heightToggle) {
+      const panel = container.closest('ytd-playlist-panel-renderer');
+      if (panel) {
+        element.appendChild(createHeightToggle(panel));
+      }
+    }
+
     container.parentElement.insertBefore(element, container);
     emit();
 
