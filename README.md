@@ -1,4 +1,16 @@
-Chrome Extension for Youtube Playlists <img src="assets/identity/icon.svg" width="128" align="right"><strong>version 0.1.1</strong>
+
+# Watch Sooner
+
+<img src="assets/identity/icon.svg" width="128" align="right"><strong>version 0.2.0</strong>
+
+
+Chrome Extension for Youtube Playlists
+
+
+
+# {{name}}
+
+{{description}} <img src="assets/identity/icon.svg" width="128" align="right"><strong>version {{version}}</strong>
 
 **Watch Sooner** is a small browser helper for anyone who uses YouTube's "Watch Later" list or other playlists as their personal queue. It's built for the reality of a Watch Later list that grows faster than you can clean it out, making it easier to see what's actually in there, skip past videos you've already mostly watched, and browse your list comfortably instead of squinting through a cramped little panel. The goal is simple: help you actually get back to the videos you saved, instead of losing them in an ever-growing pile.
 
@@ -8,11 +20,9 @@ AI Disclosure: This is an AI rewrite/maintained version of a handmade extension 
 
 Visit the project at: https://github.com/EvanEdwards/watchsooner
 
-
 ## Features
 
 Features noted TODO are not done yet, and will be done when TODO is removed.  Features with PROPOSED will be done later.
-
 
 Features that modify the Playlist view and Playlists panel when watching videos.
 
@@ -20,19 +30,18 @@ Features that modify the Playlist view and Playlists panel when watching videos.
 
 Features that only modify the Playlist panel when watching videos.
 
-- (TODO) A toggle height button that allows the playlist panel to be `height: auto` so it shows all videos in the list, scrolling the page rather than the tiny scroll within the panel itself. 
+- A "Show all" toggle button that expands the playlist panel to `height: auto` so it shows all videos in the list, scrolling the page rather than the tiny scroll within the panel itself.
 
-Features that only modify the playlist view: 
+Features that only modify the playlist view:
 
 - (PROPOSED) A "Fetch All" button that preloads the list so it can be scrolled through and searched.
-
 
 # Build
 
 This uses a simple, old school `Makefile`.  If tests pass, the code is built to `/dist` as a package, plus `/dist/unpacked` as a unpacked directory of code that can be loaded in Chrome for use or testing.  To test the code, then build to a distribution in `/dist` (created if necessary), use:
 
 ```
-$ make 
+$ make
 ```
 
 Or to test only:
@@ -49,12 +58,9 @@ $ make release
 
 For a release, if all tests pass, a versioned packed extension is created in `/dist` and the git is tagged with the version number and a release of the packed extension is made on github.
 
-
 Other things that make will do as part of the build (assuming tests pass):
 
 - Update README.md to contain the Markdown from project.md (omitting the YAML front matter).
-
-
 
 ## Files
 

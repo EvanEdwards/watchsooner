@@ -1,5 +1,5 @@
 ---
-version: 0.1.1
+version: 0.2.0
 name: Watch Sooner
 type: code
 description: Chrome Extension for Youtube Playlists
@@ -11,6 +11,7 @@ code:
       id: b539d83c-ac9b-5e5f-a6b2-18b2bdabd4d1
 ---
 
+# {{name}}
 
 {{description}} <img src="assets/identity/icon.svg" width="128" align="right"><strong>version {{version}}</strong>
 

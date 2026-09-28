@@ -4,6 +4,8 @@
 
 ## 2026-09
 
+- [!] #Commit 0.2.0: Github public stuff ✅ 2026-09-28
+- [!] **VERSION 0.2.0 RELEASE** ✅ 2026-09-28
 - [x] Renamed percent-filter.js to feature-filter-percent.js; added feature-playlist-height.js ✅ 2026-09-28
 - [x] Fixed height-toggle leak: scope the max-height override to #playlist, not all of ytd-watch-flexy ✅ 2026-09-28
 - [x] Added a "Show all" toggle that expands the Playlists panel to its full height ✅ 2026-09-28
