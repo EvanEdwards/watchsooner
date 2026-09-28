@@ -15,6 +15,8 @@ code:
 
 <strong>version {{version}}</strong> - {{description}}
 
+&nbsp;
+
 ---
 
 **Watch Sooner** is a small browser helper for anyone who uses YouTube's "Watch Later" list or other playlists as their personal queue. It's built for the reality of a Watch Later list that grows faster than you can clean it out, making it easier to see what's actually in there, skip past videos you've already mostly watched, and browse your list comfortably instead of squinting through a cramped little panel. The goal is simple: help you actually get back to the videos you saved, instead of losing them in an ever-growing pile.
