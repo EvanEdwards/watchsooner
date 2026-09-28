@@ -1,6 +1,7 @@
 # <img src="assets/identity/icon.svg" width="128" align="right"> Watch Sooner
 
 **Chrome Extension for Youtube Playlists**
+
 *version 0.2.0*
 
 &nbsp;
