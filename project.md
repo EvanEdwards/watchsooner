@@ -13,7 +13,8 @@ code:
 
 # <img src="assets/identity/icon.svg" width="128" align="right"> {{name}}
 
-<strong>version {{version}}</strong> - {{description}}
+**{{description}}**
+*version {{version}}*
 
 &nbsp;
 
