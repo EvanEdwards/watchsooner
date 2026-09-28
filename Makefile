@@ -4,7 +4,7 @@ DIST := dist
 UNPACKED := $(DIST)/unpacked
 PACKAGE := $(DIST)/$(EXT_NAME)-$(VERSION).zip
 
-.PHONY: all test build release readme icons clean
+.PHONY: all test build release check-version-bumped readme icons clean
 
 all: test build
 
@@ -32,13 +32,21 @@ build: test readme icons
 
 RELEASE_NOTES := $(DIST)/release-$(VERSION).txt
 
-release: build
+check-version-bumped:
+	@if git rev-parse -q --verify "refs/tags/v$(VERSION)" >/dev/null; then \
+		echo "Error: v$(VERSION) has already been released. Increment the version in project.md first." >&2; \
+		exit 1; \
+	fi
+
+release: check-version-bumped build
 	node scripts/draft-release-notes.js $(VERSION)
 	$${EDITOR:-vi} $(RELEASE_NOTES)
 	git tag v$(VERSION)
 	git push origin HEAD
 	git push origin v$(VERSION)
 	gh release create v$(VERSION) $(PACKAGE) --title "v$(VERSION)" --target $$(git rev-parse HEAD) --notes-file $(RELEASE_NOTES)
+	node scripts/changelog-append-release.js $(VERSION)
+	@echo "Added a VERSION $(VERSION) RELEASE marker to CHANGELOG.md (not committed)."
 
 clean:
 	rm -rf $(DIST)

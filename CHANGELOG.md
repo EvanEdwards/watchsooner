@@ -4,10 +4,12 @@
 
 ## 2026-09
 
+- [!] **VERSION 0.1.1 RELEASE**  ✅ 2026-09-28
 - [x] `make release` now opens an editor on dist/release-<version>.txt, prefilled from CHANGELOG.md ✅ 2026-09-28
 - [x] Fixed `make release`: push the branch itself, not just the tag, and pass an explicit --target to gh ✅ 2026-09-28
+- [!] **VERSION 0.1.0 RELEASE** ✅ 2026-09-28
 - [x] README.md generator now substitutes {{key}}/{{nested.key}} placeholders from project.md frontmatter ✅ 2026-09-28
-- [!] **VERSION 0.0.2 RELEASE**
+- [!] **VERSION 0.0.2 RELEASE**  ✅ 2026-09-28
 - [x] Removed dependency on another extension's --yt-spec-* CSS vars; added --wsoon-* theme vars ✅ 2026-09-28
 - [x] Changed the full-range label from "0-100%" to "Any" ✅ 2026-09-28
 - [x] Restyled slider red (#ff0033) on a #ccc track, matching YouTube's watched-progress color ✅ 2026-09-28
