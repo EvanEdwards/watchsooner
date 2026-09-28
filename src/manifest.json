@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "WatchSooner",
+  "version": "0.0.0",
+  "description": "Filter and browse your YouTube Watch Later list more comfortably.",
+  "author": "Evan Edwards",
+  "icons": {
+    "16": "assets/identity/icon-16.png",
+    "48": "assets/identity/icon-48.png",
+    "128": "assets/identity/icon-128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.youtube.com/*"],
+      "js": ["src/percent-filter.js", "src/content.js"],
+      "css": ["src/slider.css"],
+      "run_at": "document_idle"
+    }
+  ]
+}
