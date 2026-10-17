@@ -1,8 +1,18 @@
-# <img src="assets/identity/icon.svg" width="128" align="right"> Watch Sooner
 
-**Chrome Extension for Youtube Playlists**
+# Watch Sooner
 
-*version 0.2.0*
+<img src="assets/identity/icon.svg" width="128" align="right"><strong>version 0.2.0</strong>
+
+
+Chrome Extension for Youtube Playlists
+
+
+
+# <img src="assets/identity/icon.svg" width="128" align="right"> {{name}}
+
+**{{description}}**
+
+*version {{version}}*
 
 &nbsp;
 
@@ -16,11 +26,9 @@ AI Disclosure: This is an AI rewrite/maintained version of a handmade extension 
 
 Visit the project at: https://github.com/EvanEdwards/watchsooner
 
-
 ## Features
 
 Features noted TODO are not done yet, and will be done when TODO is removed.  Features with PROPOSED will be done later.
-
 
 Features that modify the Playlist view and Playlists panel when watching videos.
 
@@ -30,17 +38,16 @@ Features that only modify the Playlist panel when watching videos.
 
 - A "Show all" toggle button that expands the playlist panel to `height: auto` so it shows all videos in the list, scrolling the page rather than the tiny scroll within the panel itself.
 
-Features that only modify the playlist view: 
+Features that only modify the playlist view:
 
 - (PROPOSED) A "Fetch All" button that preloads the list so it can be scrolled through and searched.
-
 
 # Build
 
 This uses a simple, old school `Makefile`.  If tests pass, the code is built to `/dist` as a package, plus `/dist/unpacked` as a unpacked directory of code that can be loaded in Chrome for use or testing.  To test the code, then build to a distribution in `/dist` (created if necessary), use:
 
 ```
-$ make 
+$ make
 ```
 
 Or to test only:
@@ -57,7 +64,6 @@ $ make release
 
 For a release, if all tests pass, a versioned packed extension is created in `/dist` and the git is tagged with the version number and a release of the packed extension is made on github.
 
-
 Other things that make will do as part of the build (assuming tests pass):
 
 - Update README.md to contain the Markdown from project.md (omitting the YAML front matter).
@@ -72,7 +78,6 @@ I develop on Linux.  YMMV.
 - `zip` - packages `dist/unpacked` into the distributable `.zip`.
 - `git` - tags and pushes releases.
 - `gh` - creates the GitHub release (`make release` only).
-
 
 ## Files
 

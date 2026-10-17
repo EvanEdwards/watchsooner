@@ -6,6 +6,11 @@ feature list live in `project.md`; `README.md` is generated from it, don't edit 
 `CHANGELOG.md` entries go newest-first: add new lines at the top of the day's list,
 not the bottom.
 
+When testing live with the Claude in Chrome extension (`mcp__claude-in-chrome__*`),
+leave the browser tab/session open when done — don't close it with
+`tabs_close_mcp`. The user wants to keep it for follow-up work. Reuse the open tab
+on later tests instead of creating a new one.
+
 ## Layout
 
 - `src/feature-filter-percent.js` — pure DOM-reading/filter logic for the watched-%
