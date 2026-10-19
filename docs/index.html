@@ -106,7 +106,7 @@
 /* About band and footer */
 .sd-band{background:var(--sage-900);color:var(--ink)}
 .sd-band__inner{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:var(--space-12);max-width:1120px;margin:0 auto;padding:var(--space-12) var(--space-8)}
-.sd-band h2{margin:0}
+.sd-band h2{margin:1rem 0; font-family: var(--font-display); color: var(--accent) }
 .sd-prose{max-width:62ch}
 .sd-prose p{margin:0 0 var(--space-4)}
 .sd-prose p:last-child{margin-bottom:0}
@@ -173,6 +173,33 @@ internals of Youtube. I switched it to Claude and rebuilt it from
 scratch. I believe this is a decent use of AI, as keeping it up to date
 against internal changes is essentially a massive time suck and
 impossible to justify for a free extension.</p>
+<h2 id="features">Features</h2>
+<p>Watch Sooner adds a few tools right above your list, on the playlist
+page (Watch Later included) and on the Playlists panel next to the video
+you’re watching. There’s nothing to set up. It’s just there when you
+open a playlist.</p>
+<ul>
+<li><strong>Filter by how much you’ve watched.</strong> A two-handle
+slider hides everything outside the range you pick. Slide it down to
+find the videos you haven’t started, or up to find the ones you nearly
+finished. The handles can cross, so you never have to think about which
+is which, and “Any” puts everything back.</li>
+<li><strong>See the whole panel.</strong> The “Show all” button
+stretches the Playlists panel to show every video, and the page scrolls
+instead of that tiny box. Click it again to put it back.</li>
+<li><strong>Sort any playlist.</strong> Pick a sort and Watch Sooner
+loads the entire list and reorders it right on the page: by channel,
+title, duration, how much you’ve watched, or when it was published.
+Publication time is approximate, since YouTube only says “6y ago”. This
+is a temporary view, so nothing changes in your playlist until you say
+so. The panel only keeps about 200 videos handy, so sort from the
+playlist page when you want all of them.</li>
+<li><strong>Keep a sort.</strong> Happy with the order? “Save Sort”
+makes it the real order of your playlist, using as few moves as
+possible, and checks YouTube’s result afterward. Big reorders ask first,
+and if a sorted copy would be faster, it offers to make one
+instead.</li>
+</ul>
         </div>
       </div>
     </section>

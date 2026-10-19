@@ -16,23 +16,16 @@ This is a Chrome Extension that only applies to Youtube.com and is focused on pl
 
 AI Disclosure: This is an AI rewrite/maintained version of a handmade extension that was always out of date.  As a free personal tool, I just didn't have enough time to maintain it against Google's updates to the internals of Youtube.  I switched it to Claude and rebuilt it from scratch.  I believe this is a decent use of AI, as keeping it up to date against internal changes is essentially a massive time suck and impossible to justify for a free extension.
 
----
-
 ## Features
 
-Features noted TODO are not done yet, and will be done when TODO is removed.  Features with PROPOSED will be done later.
+Watch Sooner adds a few tools right above your list, on the playlist page (Watch Later included) and on the Playlists panel next to the video you're watching.  There's nothing to set up.  It's just there when you open a playlist.
 
-Features that modify the Playlist view and Playlists panel when watching videos.
+- **Filter by how much you've watched.**  A two-handle slider hides everything outside the range you pick.  Slide it down to find the videos you haven't started, or up to find the ones you nearly finished.  The handles can cross, so you never have to think about which is which, and "Any" puts everything back.
+- **See the whole panel.**  The "Show all" button stretches the Playlists panel to show every video, and the page scrolls instead of that tiny box.  Click it again to put it back.
+- **Sort any playlist.**  Pick a sort and Watch Sooner loads the entire list and reorders it right on the page: by channel, title, duration, how much you've watched, or when it was published.  Publication time is approximate, since YouTube only says "6y ago".  This is a temporary view, so nothing changes in your playlist until you say so.  The panel only keeps about 200 videos handy, so sort from the playlist page when you want all of them.
+- **Keep a sort.**  Happy with the order?  "Save Sort" makes it the real order of your playlist, using as few moves as possible, and checks YouTube's result afterward.  Big reorders ask first, and if a sorted copy would be faster, it offers to make one instead.
 
-- A range slider filters the videos by percentage watched, hiding videos outside the chosen watched-percent range.
-
-Features that only modify the Playlist panel when watching videos.
-
-- A "Show all" toggle button that expands the playlist panel to `height: auto` so it shows all videos in the list, scrolling the page rather than the tiny scroll within the panel itself.
-
-Features that only modify the playlist view:
-
-- (PROPOSED) A "Fetch All" button that preloads the list so it can be scrolled through and searched.
+---
 
 # Build
 
