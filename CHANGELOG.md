@@ -4,6 +4,20 @@
 
 ## 2026-10
 
+- [!] #Commit 0.2.1: Getting release ready ✅ 2026-10-18
+- [x] Added tests for the website builder (59 tests total) ✅ 2026-10-18
+- [x] Added scripts/build-website.sh (bash) and website/: template plus the design's CSS and tokens ✅ 2026-10-18
+- [x] `make website` builds docs/index.html from project.md and assets/** in the Sage Dark Landing design ✅ 2026-10-18
+- [x] Manifest name, short_name, description, homepage_url and version now come from project.md via yq ✅ 2026-10-18
+- [x] Added scripts/build-manifest.sh (bash) with tests; removed the unused Node version and README scripts ✅ 2026-10-18
+- [x] Dropped the manifest "author" key, which Chrome has ignored since Feb 2024 ✅ 2026-10-18
+- [x] Documented the Web Store images in assets/google/; added "Create screenshots" as a CRITICAL TODO ✅ 2026-10-18
+- [x] Added unit tests for sorting, move planning and response parsing (40 tests total) ✅ 2026-10-17
+- [x] Sort dropdown: channel, title, duration, watched %, publication time; under ⋮ in the panel ✅ 2026-10-17
+- [x] Sorting loads the whole list first; the panel warns when it can only sort the videos it holds ✅ 2026-10-17
+- [x] Save Sort: reorders the real playlist with the fewest moves, in batches, then verifies the result ✅ 2026-10-17
+- [x] Save Sort asks first above 50 moves, and offers a sorted copy when that takes fewer requests ✅ 2026-10-17
+- [x] Added a page-world bridge (src/page-bridge.js) that reads and edits playlists as the signed-in user ✅ 2026-10-17
 
 ## 2026-09
 

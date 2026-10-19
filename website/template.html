@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>@@TITLE@@ — @@DESCRIPTION@@</title>
+<meta name="description" content="@@DESCRIPTION@@">
+<link rel="icon" type="image/svg+xml" href="@@FAVICON@@">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;800&amp;family=Roboto:wght@400;500&amp;family=Literata:opsz,wght@7..72,400..700&amp;display=swap">
+<style>
+@@CSS@@
+html{color-scheme:dark}
+html,body{margin:0}
+body{background:var(--surface-100)}
+</style>
+</head>
+<body>
+<div class="sd-page">
+  <header class="sd-nav">
+    <a class="sd-wordmark" href="#"><span class="sd-rose-tile"><span class="sd-rose" role="img" aria-label="Cheshire Hall rose"></span></span><span>Cheshire Hall<span class="sd-wordmark__dot">.</span></span></a>
+    <a class="sd-link caption" href="@@CHANGELOG_URL@@">Changelog</a>
+  </header>
+  <main>
+    <section class="sd-hero">
+      <div class="sd-hero__copy">
+        <span class="sd-eyebrow label">Chrome extension</span>
+        <h1 class="display">@@TITLE@@</h1>
+        <p class="lede">@@DESCRIPTION@@</p>
+        <div class="sd-hero__actions">
+          <a class="sd-button sd-button--primary action" href="@@DOWNLOAD_URL@@">@@DOWNLOAD_ICON@@@@DOWNLOAD_LABEL@@</a>
+          <a class="sd-button sd-button--secondary action" href="@@SOURCE_URL@@">View source</a>
+        </div>
+        <p class="sd-hero__meta caption">@@META@@</p>
+      </div>
+      <figure class="sd-shot">
+        <div class="sd-shot__bar">
+          <span class="sd-shot__dot"></span><span class="sd-shot__dot"></span><span class="sd-shot__dot"></span>
+          <span class="sd-shot__title caption">youtube.com</span>
+        </div>
+        @@SCREENSHOT@@
+      </figure>
+    </section>
+    <section class="sd-band">
+      <div class="sd-band__inner">
+        <h2 class="h2">About</h2>
+        <div class="sd-prose body">
+@@ABOUT@@
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="sd-footer caption">
+    <span>© @@AUTHOR@@</span>
+    @@AUTHOR_LINK@@
+  </footer>
+</div>
+</body>
+</html>

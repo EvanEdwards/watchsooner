@@ -1,10 +1,15 @@
+SHELL := /bin/bash
+
 EXT_NAME := watchsooner
-VERSION := $(shell node scripts/read-project-version.js)
+VERSION := $(shell yq --front-matter=extract '.version' project.md)
+ifeq ($(strip $(VERSION)),)
+$(error Could not read the version from project.md (is yq installed?))
+endif
 DIST := dist
 UNPACKED := $(DIST)/unpacked
 PACKAGE := $(DIST)/$(EXT_NAME)-$(VERSION).zip
 
-.PHONY: all test build release check-version-bumped readme icons clean
+.PHONY: all test build release check-version-bumped readme icons website clean
 
 all: test build
 
@@ -12,7 +17,7 @@ test:
 	node --test 'test/**/*.test.js'
 
 readme:
-	node scripts/build-readme.js
+	p readme
 
 icons:
 	mkdir -p assets/identity
@@ -25,7 +30,7 @@ build: test readme icons
 	mkdir -p $(UNPACKED)/src $(UNPACKED)/assets/identity
 	cp -r src/*.js src/*.css $(UNPACKED)/src/
 	cp assets/identity/icon-16.png assets/identity/icon-48.png assets/identity/icon-128.png $(UNPACKED)/assets/identity/
-	node -e "const fs=require('node:fs');const m=JSON.parse(fs.readFileSync('src/manifest.json','utf8'));m.version='$(VERSION)';fs.writeFileSync('$(UNPACKED)/manifest.json', JSON.stringify(m, null, 2));"
+	scripts/build-manifest.sh project.md src/manifest.json $(UNPACKED)/manifest.json
 	mkdir -p $(DIST)
 	cd $(UNPACKED) && zip -rq -X ../../$(PACKAGE) .
 	@echo "Built $(PACKAGE)"
@@ -47,6 +52,9 @@ release: check-version-bumped build
 	gh release create v$(VERSION) $(PACKAGE) --title "v$(VERSION)" --target $$(git rev-parse HEAD) --notes-file $(RELEASE_NOTES)
 	node scripts/changelog-append-release.js $(VERSION)
 	@echo "Added a VERSION $(VERSION) RELEASE marker to CHANGELOG.md (not committed)."
+
+website:
+	scripts/build-website.sh project.md docs/index.html
 
 clean:
 	rm -rf $(DIST)

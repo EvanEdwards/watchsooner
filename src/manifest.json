@@ -1,9 +1,11 @@
 {
   "manifest_version": 3,
-  "name": "WatchSooner",
+  "name": "(from project.md)",
+  "short_name": "(from project.md)",
   "version": "0.0.0",
-  "description": "Filter and browse your YouTube Watch Later list more comfortably.",
-  "author": "Evan Edwards",
+  "minimum_chrome_version": "111",
+  "description": "(from project.md)",
+  "homepage_url": "https://example.invalid/(from project.md)",
   "icons": {
     "16": "assets/identity/icon-16.png",
     "48": "assets/identity/icon-48.png",
@@ -12,7 +14,19 @@
   "content_scripts": [
     {
       "matches": ["https://www.youtube.com/*"],
-      "js": ["src/feature-filter-percent.js", "src/feature-playlist-height.js", "src/content.js"],
+      "js": ["src/page-bridge.js"],
+      "world": "MAIN",
+      "run_at": "document_start"
+    },
+    {
+      "matches": ["https://www.youtube.com/*"],
+      "js": [
+        "src/feature-filter-percent.js",
+        "src/feature-playlist-height.js",
+        "src/feature-playlist-sort.js",
+        "src/feature-sort-ui.js",
+        "src/content.js"
+      ],
       "css": ["src/slider.css"],
       "run_at": "document_idle"
     }

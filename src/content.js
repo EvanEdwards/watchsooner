@@ -1,10 +1,11 @@
-// Mounts the watched-% range filter (src/feature-filter-percent.js) and the
-// playlist panel's height toggle (src/feature-playlist-height.js) into the
-// Watch Later playlist view and the Playlists panel. Both feature scripts must
-// be loaded before this one.
+// Mounts the watched-% range filter (src/feature-filter-percent.js), the
+// playlist panel's height toggle (src/feature-playlist-height.js) and the sort
+// controls (src/feature-sort-ui.js) into the Watch Later playlist view and the
+// Playlists panel. The feature scripts must be loaded before this one.
 (function () {
   const { getWatchedPercent, shouldShow } = window.WatchSoonerFilter;
   const { createHeightToggle } = window.WatchSoonerHeightToggle;
+  const { createSortRow } = window.WatchSoonerSortUI;
 
   const TARGETS = [
     {
@@ -17,6 +18,7 @@
       containerSelector: 'ytd-playlist-panel-renderer #items',
       itemSelector: 'ytd-playlist-panel-video-renderer',
       heightToggle: true,
+      panel: true,
     },
   ];
 
@@ -80,10 +82,21 @@
       }
     }
 
+    const sort = createSortRow({
+      container,
+      itemSelector: target.itemSelector,
+      isPanel: Boolean(target.panel),
+    });
+    if (sort.moreButton) element.appendChild(sort.moreButton);
+
     container.parentElement.insertBefore(element, container);
+    container.parentElement.insertBefore(sort.row, container);
     emit();
 
-    const observer = new MutationObserver(emit);
+    const observer = new MutationObserver(() => {
+      emit();
+      sort.reapply();
+    });
     observer.observe(container, { childList: true, subtree: true });
   }
 
