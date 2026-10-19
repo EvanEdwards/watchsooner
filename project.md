@@ -1,6 +1,6 @@
 ---
-version: 0.2.1
-name: "WatchSooner"
+version: 0.2.2
+name: "Watch Sooner"
 title: "Watch Sooner"
 titleshort: "Watch Sooner"
 url: https://evanedwards.github.io/watchsooner/
@@ -20,9 +20,9 @@ code:
 
 **Watch Sooner** is a small browser helper for anyone who uses YouTube's "Watch Later" list or other playlists as their personal queue. It's built for the reality of a Watch Later list that grows faster than you can clean it out, making it easier to see what's actually in there, skip past videos you've already mostly watched, and browse your list comfortably instead of squinting through a cramped little panel. The goal is simple: help you actually get back to the videos you saved, instead of losing them in an ever-growing pile.
 
-This is a Chrome Extension that only applies to Youtube.com and is focused on playlists.  We do not collect any information whatsoever and this is open source without ads.
+**Privacy:** This is a Chrome Extension that only applies to YouTube.com and is focused on playlists.  We do not collect any information whatsoever and this is open source without ads.
 
-AI Disclosure: This is an AI rewrite/maintained version of a handmade extension that was always out of date.  As a free personal tool, I just didn't have enough time to maintain it against Google's updates to the internals of Youtube.  I switched it to Claude and rebuilt it from scratch.  I believe this is a decent use of AI, as keeping it up to date against internal changes is essentially a massive time suck and impossible to justify for a free extension.
+**AI Disclosure:** This is an AI rewrite/maintained version of a handmade extension that was always out of date.  As a free personal tool, I just didn't have enough time to maintain it against Google's updates to the internals of YouTube.  I switched it to Claude and rebuilt it from scratch.  I believe this is a decent use of AI, as keeping it up to date against internal changes is essentially a massive time suck and impossible to justify for a free extension.
 
 
 

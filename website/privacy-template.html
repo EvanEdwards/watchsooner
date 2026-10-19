@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy policy — @@TITLE@@</title>
+<meta name="description" content="Privacy policy for @@TITLE@@.">
+<link rel="icon" type="image/svg+xml" href="@@FAVICON@@">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;800&amp;family=Roboto:wght@400;500&amp;family=Literata:opsz,wght@7..72,400..700&amp;display=swap">
+<style>
+@@CSS@@
+html{color-scheme:dark}
+html,body{margin:0}
+body{background:var(--surface-100)}
+
+.sd-footer__links{display:inline-flex;flex-wrap:wrap;gap:var(--space-6)}
+
+/* The policy text is Markdown rendered by pandoc, so it has plain h1/h2/p/ul elements. */
+.sd-doc{max-width:1120px;margin:0 auto;padding:var(--space-12) var(--space-8) var(--space-16)}
+.sd-doc__body{max-width:62ch}
+.sd-doc h1{margin:0 0 var(--space-6);font-family:var(--font-display);font-size:40px;line-height:44px;font-weight:800;letter-spacing:-0.02em}
+.sd-doc h2{margin:var(--space-12) 0 var(--space-4);font-family:var(--font-display);font-size:24px;line-height:30px;font-weight:700;letter-spacing:-0.01em}
+.sd-doc ul,.sd-doc ol{margin:0 0 var(--space-4);padding-left:var(--space-6)}
+.sd-doc li{margin-bottom:var(--space-2)}
+.sd-doc a{color:var(--sage-300);text-decoration:underline;text-underline-offset:3px;transition:color .15s}
+.sd-doc a:hover{color:var(--ink)}
+.sd-doc a:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.sd-doc code{padding:0 var(--space-1);border-radius:var(--radius-sm);background:var(--surface-300);font-size:.9em}
+@media (max-width:820px){.sd-doc{padding:var(--space-8) var(--space-4) var(--space-12)}}
+@media (prefers-reduced-motion:reduce){.sd-doc a{transition:none}}
+</style>
+</head>
+<body>
+<div class="sd-page">
+  <header class="sd-nav">
+    <a class="sd-wordmark" href="index.html"><span class="sd-rose-tile"><span class="sd-rose" role="img" aria-label="Cheshire Hall rose"></span></span><span>Cheshire Hall<span class="sd-wordmark__dot">.</span></span></a>
+    <a class="sd-link caption" href="index.html">Home</a>
+  </header>
+  <main class="sd-doc">
+    <div class="sd-doc__body sd-prose body">
+@@PRIVACY@@
+    </div>
+  </main>
+  <footer class="sd-footer caption">
+    <span>© @@AUTHOR@@</span>
+    <span class="sd-footer__links">@@AUTHOR_LINK@@@@PRIVACY_LINK@@</span>
+  </footer>
+</div>
+</body>
+</html>

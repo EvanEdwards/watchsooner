@@ -12,6 +12,24 @@
 html{color-scheme:dark}
 html,body{margin:0}
 body{background:var(--surface-100)}
+
+.sd-footer__links{display:inline-flex;flex-wrap:wrap;gap:var(--space-6)}
+
+/* Screenshot slideshow: the slides stack and cross-fade; the stage keeps the 16:10 frame. */
+.sd-shot__stage{position:relative;aspect-ratio:16/10;background:var(--surface-300)}
+.sd-shot__stage[role="button"]{cursor:zoom-in}
+.sd-shot__stage:focus-visible{outline:3px solid var(--accent);outline-offset:-3px}
+.sd-shot__slide{position:absolute;inset:0;width:100%;height:100%;opacity:0;transition:opacity .6s ease}
+.sd-shot__slide.is-active{opacity:1}
+
+/* Full-screen view: any click closes it, as does the X button or Escape. */
+.sd-lightbox{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;background:rgb(18 22 20 / 94%);cursor:zoom-out}
+.sd-lightbox img{display:block;max-width:100vw;max-height:100vh;width:auto;height:auto;object-fit:contain}
+.sd-lightbox__close{position:absolute;top:var(--space-4);right:var(--space-4);display:grid;place-items:center;width:44px;height:44px;padding:0;border:1px solid var(--border-strong);border-radius:var(--radius-pill);background:var(--surface-200);color:var(--ink);cursor:pointer;transition:background-color .15s,border-color .15s}
+.sd-lightbox__close:hover{background:var(--surface-300);border-color:var(--sage-500)}
+.sd-lightbox__close:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.sd-lightbox-open{overflow:hidden}
+@media (prefers-reduced-motion:reduce){.sd-shot__slide,.sd-lightbox__close{transition:none}}
 </style>
 </head>
 <body>
@@ -37,7 +55,9 @@ body{background:var(--surface-100)}
           <span class="sd-shot__dot"></span><span class="sd-shot__dot"></span><span class="sd-shot__dot"></span>
           <span class="sd-shot__title caption">youtube.com</span>
         </div>
-        @@SCREENSHOT@@
+        <div class="sd-shot__stage">
+@@SCREENSHOT@@
+        </div>
       </figure>
     </section>
     <section class="sd-band">
@@ -51,8 +71,94 @@ body{background:var(--surface-100)}
   </main>
   <footer class="sd-footer caption">
     <span>© @@AUTHOR@@</span>
-    @@AUTHOR_LINK@@
+    <span class="sd-footer__links">@@AUTHOR_LINK@@@@PRIVACY_LINK@@</span>
   </footer>
 </div>
+<script>
+(function () {
+  var stage = document.querySelector('.sd-shot__stage');
+  if (!stage) return;
+  var slides = Array.prototype.slice.call(stage.querySelectorAll('.sd-shot__slide'));
+  if (!slides.length) return;
+
+  var current = 0;
+  var hovering = false;
+  var lightbox = null;
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  stage.setAttribute('role', 'button');
+  stage.setAttribute('tabindex', '0');
+  stage.setAttribute('aria-label', 'View screenshot full screen');
+
+  function show(index) {
+    slides[current].classList.remove('is-active');
+    slides[current].setAttribute('aria-hidden', 'true');
+    current = index;
+    slides[current].classList.add('is-active');
+    slides[current].removeAttribute('aria-hidden');
+  }
+
+  // Rotates every 4 seconds. It holds still for people who asked for reduced motion,
+  // while the pointer is over the screenshot, while it has keyboard focus, while the
+  // full-screen view is open, and while the tab is hidden.
+  setInterval(function () {
+    if (slides.length < 2 || reduceMotion.matches || hovering || lightbox || document.hidden) return;
+    if (stage.matches(':focus-visible')) return;
+    show((current + 1) % slides.length);
+  }, 4000);
+
+  stage.addEventListener('mouseenter', function () { hovering = true; });
+  stage.addEventListener('mouseleave', function () { hovering = false; });
+
+  function openLightbox(byKeyboard) {
+    if (lightbox) return;
+    var shot = slides[current];
+    lightbox = document.createElement('div');
+    lightbox.className = 'sd-lightbox';
+    lightbox.setAttribute('role', 'dialog');
+    lightbox.setAttribute('aria-modal', 'true');
+    lightbox.setAttribute('aria-label', 'Screenshot');
+    lightbox.dataset.byKeyboard = byKeyboard ? '1' : '';
+
+    var image = document.createElement('img');
+    image.src = shot.src;
+    image.alt = shot.alt;
+
+    var close = document.createElement('button');
+    close.type = 'button';
+    close.className = 'sd-lightbox__close';
+    close.setAttribute('aria-label', 'Close');
+    close.innerHTML = '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 4l12 12M16 4 4 16"/></svg>';
+
+    lightbox.appendChild(image);
+    lightbox.appendChild(close);
+    // A click anywhere closes it: on the picture, the backdrop or the X.
+    lightbox.addEventListener('click', closeLightbox);
+    document.body.appendChild(lightbox);
+    document.documentElement.classList.add('sd-lightbox-open');
+    close.focus();
+  }
+
+  function closeLightbox() {
+    if (!lightbox) return;
+    var byKeyboard = lightbox.dataset.byKeyboard === '1';
+    lightbox.remove();
+    lightbox = null;
+    document.documentElement.classList.remove('sd-lightbox-open');
+    if (byKeyboard) stage.focus();
+  }
+
+  stage.addEventListener('click', function () { openLightbox(false); });
+  stage.addEventListener('keydown', function (event) {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      openLightbox(true);
+    }
+  });
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape') closeLightbox();
+  });
+}());
+</script>
 </body>
 </html>

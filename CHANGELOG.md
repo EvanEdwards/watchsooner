@@ -4,6 +4,23 @@
 
 ## 2026-10
 
+- [x] Name is now "Watch Sooner" everywhere, including the store name ✅ 2026-10-18
+- [x] Fixed "Youtube" to "YouTube" in the docs, site and promo tile ✅ 2026-10-18
+- [x] Rebuilt docs/ for the new name and version 0.2.2 ✅ 2026-10-18
+- [x] Updated LISTING.md and CLAUDE.md for the new name ✅ 2026-10-18
+- [x] Cleared finished items from TODO.md; "Fix layout issue" stays open ✅ 2026-10-18
+- [x] Added tests for the privacy page and its footer link (70 tests total) ✅ 2026-10-18
+- [x] Added assets/google/Declarations.md: dashboard privacy answers and reviewer notes ✅ 2026-10-18
+- [x] Added LISTING.md: the Web Store listing text and fields ✅ 2026-10-18
+- [x] `make website` builds docs/privacy.html from PRIVACY.md; the footer links to it ✅ 2026-10-18
+- [x] Wrote PRIVACY.md, the privacy policy, from what the code actually does ✅ 2026-10-18
+- [x] Marquee image is final and fully opaque, so nothing needs flattening before upload ✅ 2026-10-18
+- [x] Completed TODO "Create screenshots": two real 1280x800 screenshots; promo tile is still a placeholder ✅ 2026-10-18
+- [x] Website: slowed the screenshot rotation from every 2 seconds to every 4 seconds ✅ 2026-10-18
+- [x] Website: screenshots rotate every 2 s with a fade; click opens full screen (X, click or Esc closes) ✅ 2026-10-18
+- [x] Website embeds every assets/**/screenshot-*.png (up to 5) as slides; tests now total 63 ✅ 2026-10-18
+- [x] Added a second screenshot (screenshot-002.png, with its GIMP source) ✅ 2026-10-18
+- [x] Rewrote the project.md Features section as a short, positive overview of what exists ✅ 2026-10-18
 - [!] #Commit 0.2.1: Minor retouch to css ✅ 2026-10-18
 - [!] #Commit 0.2.1: Added Features to site ✅ 2026-10-18
 - [!] #Commit 0.2.1: Various changes added to Changelog ✅ 2026-10-18

@@ -1,2 +1,1 @@
-- [ ] Create screenshots #CRITICAL
-- [ ] #Identity Edit icon and mono files
+- [ ] Fix layout issue #CRITICAL

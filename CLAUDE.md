@@ -62,9 +62,11 @@ on later tests instead of creating a new one.
   `src/manifest.json` template, copying fixed fields out of `project.md`'s
   frontmatter with `yq` (see "Manifest fields come from `project.md`" below).
   `test/build-manifest.test.js` runs it against fixtures.
-- `scripts/build-website.sh`, `website/` — the single-page site builder and its inputs
-  (template plus the vendored design files); `test/build-website.test.js` covers it.
-  See "Website" below.
+- `scripts/build-website.sh`, `website/` — the site builder (`docs/index.html` and
+  `docs/privacy.html`) and its inputs (two templates plus the vendored design files);
+  `test/build-website.test.js` covers it. See "Website" below.
+- `PRIVACY.md`, `LISTING.md`, `assets/google/Declarations.md` — the Web Store paperwork
+  (policy text, listing text, dashboard answers). See "Store submission documents".
 - `scripts/draft-release-notes.js`, `scripts/changelog-append-release.js` — the two
   `make release` helpers. Still Node (written before the bash preference below);
   convert to bash if you're touching them anyway.
@@ -79,18 +81,17 @@ uploaded in the store dashboard and are **not** part of the extension zip.
   store takes 1–5, at least one required. **Treat the set as a glob, never a fixed
   list:** if the user adds `screenshot-002.png` or similar, include it too — in any
   script, checklist or submission notes — up to the limit of 5. Don't hardcode
-  `screenshot-001.png`. (One deliberate exception: the website shows only the first,
-  because its design allows one screenshot per page; see "Website" below.)
+  `screenshot-001.png`. (The website follows the same rule: it embeds them all as a
+  slideshow, up to 5; see "Website" below.)
 - `promo.png` — **440×280**, the small promo tile (required).
 - `marquee.png` — **1400×560**, optional, only needed to be featured.
 - Not listing assets: `README.md`, `marquee.xcf` (GIMP source), and `test.png`
   (a byte-identical duplicate of `marquee.png`, not to be uploaded).
 
 Sizes and "PNG or JPEG for the tiles" are from the official docs; the docs name no
-format for screenshots, so use opaque PNG or JPEG. As of 2026-10-18 some images are
-**placeholders** (`TODO.md`: "Create screenshots #CRITICAL"), so the listing is not
-ready to submit. `marquee.png` also has an alpha channel with semi-transparent
-pixels (lowest alpha about 0.89); flatten it to opaque before uploading.
+format for screenshots, so use opaque PNG or JPEG. Status as of 2026-10-18: all store images are real and opaque (two screenshots, the
+promo tile and the marquee). (Check before assuming: the files change underneath this
+note.)
 
 ## Build system
 
@@ -136,7 +137,7 @@ tool, not by anything in this repo.
   reuse/force the old tag.
 - `make clean` — removes `dist/`.
 
-### Website (`make website` → `docs/index.html`)
+### Website (`make website` → `docs/index.html` and `docs/privacy.html`)
 
 `scripts/build-website.sh` (bash; needs `yq`, `pandoc` and, to embed a screenshot,
 ImageMagick `convert`) fills `website/template.html`, which was written from the
@@ -152,7 +153,7 @@ Where each part of the page comes from:
 | `<title>`, h1, lede, footer name | `title`, `description`, `author` in the frontmatter |
 | meta line | `version`, plus `minimum_chrome_version` from `src/manifest.json` |
 | About band | the intro prose of `project.md`: the awk-and-pandoc command below |
-| screenshot | first `assets/**/screenshot-*.png` by name, as WebP under 400 KB |
+| screenshots | every `assets/**/screenshot-*.png` by name (max 5), each as WebP under 400 KB |
 | "View source", Changelog | `links.support` (GitHub), `…/blob/main/CHANGELOG.md` |
 | download button | `links.store` if set ("Add to Chrome"), else `…/releases/latest` ("Download for Chrome") |
 | footer link | `links.author` |
@@ -164,15 +165,32 @@ a rule must stay right after the intro (the `---` before `## Features`), and
 `mdFrontmatter` and this command both depend on rules being `---`.
 
 Behavior worth knowing:
+- **Privacy page.** If `PRIVACY.md` exists, the same run builds `docs/privacy.html`
+  from it (pandoc renders the Markdown into `website/privacy-template.html`) and adds a
+  "Privacy" link to the index footer; without `PRIVACY.md` there is neither page nor
+  link. `PRIVACY.md` keeps a relative `index.html` link back to the site, which works on
+  the built page but is broken when viewed on GitHub, where the file is not in `docs/`.
+  The privacy page is built first, so a problem in it stops the build before
+  `index.html` changes.
 - Fails, writing nothing, if `title`, `description`, `version` or `links.support` is
   missing, if there is no intro text, or if a `{{placeholder}}` survives anywhere in
   the page (nothing substitutes them in the intro; write real text there).
-- With no screenshot it uses the design's empty slot. The current
-  `screenshot-001.png` is a **placeholder** image ("Screenshot", see `TODO.md`), and
-  its alt text is the neutral "Screenshot of <title>" until a real one exists.
-- The design allows **one screenshot per page** and exactly one filled accent element
-  (the download button), so extra `screenshot-NNN.png` files are not shown; adding a
-  gallery would be a design change, not a build fix.
+- With no screenshot it uses the design's empty slot. Alt text is "Screenshot of
+  <title>", numbered "(1 of 2)" when there are several; it is generic, so rewrite it
+  if a screenshot needs a specific description.
+- **Screenshot slideshow** (the user's request; the design itself says one
+  screenshot per page and only 150 ms transitions, so this is a deliberate departure,
+  kept to the screenshot frame). Slides are stacked `<img>`s cross-faded (0.6 s
+  opacity) every 4 seconds by a small inline script in `website/template.html`. It
+  holds still for `prefers-reduced-motion`, while the pointer is over the frame, while
+  the frame has keyboard focus, while the full-screen view is open and while the tab
+  is hidden. A single screenshot just sits there.
+- **Full-screen view:** clicking (or Enter/Space on) the frame opens a fixed overlay
+  with the current screenshot, contained to the viewport. A click anywhere, the X
+  button (upper right) or Escape closes it. Page scroll is locked while it is open.
+  This is plain CSS/JS, not the browser Fullscreen API, so it behaves the same on
+  phones. The script has no unit tests (no DOM in the test runner); it was checked in
+  a real browser. If you change it, re-check rotation, open, and all three closes.
 - Fixed copy lives in the template, not `project.md`: the "Cheshire Hall." wordmark
   and rose (the design's brand mark; its reds are the only red the design allows, so
   the extension's own red icon is not used on the page), the "Chrome extension"
@@ -180,6 +198,25 @@ Behavior worth knowing:
 - The page is one file; its only external request is the Google Fonts stylesheet, as
   the design requires. No `links.store` and no privacy-policy link yet: add
   `links.store` to `project.md` once the extension is listed.
+
+### Store submission documents
+
+- `PRIVACY.md` (root) is the privacy policy; `make website` publishes it as
+  `docs/privacy.html`, i.e. `https://evanedwards.github.io/watchsooner/privacy.html`,
+  which is the URL the dashboard needs.
+- `LISTING.md` (root) is the store listing text and fields.
+- `assets/google/Declarations.md` has the dashboard's Privacy-practices answers
+  (single purpose, permission justification, remote code, data usage, certifications)
+  and the reviewer's test notes.
+
+**These describe what the code does, so they can become wrong.** They were written
+against `src/` on 2026-10-18: no storage, no extension APIs, no background script, no
+declared permissions, and the only network calls are same-origin requests to
+youtube.com, using the `SAPISID` cookie to sign them. If a change adds storage, a
+permission, a new host, analytics, or any network call elsewhere, update all three
+documents (and bump the date in `PRIVACY.md`) in the same change. The dashboard's
+category and certification names in `Declarations.md` are from memory and should be
+matched to the dashboard when submitting.
 
 ### Manifest fields come from `project.md`
 
@@ -238,7 +275,10 @@ Chrome requires raster icons (no SVG) for the manifest, so the build renders
   panel's watched-% slider (see `heightToggle: true` on that `TARGETS` entry in
   `content.js`). See "Playlist panel height-toggle scoping" below for how it works
   and a bug that was fixed in it.
-- Sort + Save Sort — **built; read paths verified live, write paths NOT yet verified**.
+- Sort + Save Sort — **done and in use**: the user has run Save Sort on real playlists
+  for a few days (reported 2026-10-18) and says it works well; one non-functional
+  layout issue is parked until 1.0.0. An assistant session has only verified the read
+  paths live.
   See "Playlist sorting and Save Sort" below.
 - "Fetch All" preload button — proposed only. Sorting already loads the whole list
   into view itself, so a standalone button is mostly redundant.
@@ -310,17 +350,18 @@ duration, exact watched % (`percentDurationWatched`) and relative publication te
 the item-to-data mapping on both the playlist page and the panel (0 unmatched); every
 sort direction; Manual restoring the DOM; the panel's warning; the confirm dialog.
 
-**NOT verified live: anything that writes.** Writes were never run against a real
-playlist; the user tests them on a throwaway playlist first. Formats come from
-YouTube's own data: each video's menu carries `playlistEditEndpoint`s, and "Move to
+**Writes were never exercised by an assistant session** (they edit real playlists);
+the user tested them on their own playlists and reports they work (see Feature
+status). The formats came from YouTube's own data: each video's menu carries `playlistEditEndpoint`s, and "Move to
 top" is `ACTION_MOVE_VIDEO_AFTER` with only a `setVideoId` (so no predecessor means
 top). That is why `buildMoveActions` omits `movedSetVideoIdPredecessor` for the
-first position. Still guesses to check on the first real run: that several actions
+first position. The assumptions behind them: that several actions
 in one `browse/edit_playlist` request apply in order; that `playlist/create` accepts
 `videoIds`; and `ACTION_ADD_VIDEO` with `addedVideoId` for appending. If batching
 turns out to apply moves out of order, set `MOVE_BATCH_SIZE` to 1. Save Sort always
 re-fetches the playlist afterwards and reports the first position that differs from
-the intended order, so a wrong guess shows up as a clear message, not silent damage.
+the intended order, so a wrong assumption shows up as a clear message, not silent
+damage.
 
 **Limits and thresholds** (`feature-playlist-sort.js`): 25 edits per request; 100
 videos per create/add request; a confirm dialog above 50 moves, offering a sorted

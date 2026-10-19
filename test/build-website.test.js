@@ -22,26 +22,31 @@ const baseFrontmatter = [
 
 const intro = 'The **intro** paragraph.\n\nA second paragraph.';
 
-function build({ frontmatter = baseFrontmatter, body = intro, screenshots = [] } = {}) {
+function build({ frontmatter = baseFrontmatter, body = intro, screenshots = [], privacy = null } = {}) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'wsoon-site-'));
   const project = path.join(dir, 'project.md');
   const assets = path.join(dir, 'assets');
   const manifest = path.join(dir, 'manifest.json');
   const out = path.join(dir, 'out', 'index.html');
+  const privacyMd = path.join(dir, 'PRIVACY.md');
+  const privacyOut = path.join(dir, 'out', 'privacy.html');
+  if (privacy !== null) fs.writeFileSync(privacyMd, privacy);
   fs.writeFileSync(project, `---\n${frontmatter.join('\n')}\n---\n\n${body}\n\n---\n\n## Later\n\nNot on the page.\n`);
   fs.writeFileSync(manifest, JSON.stringify({ minimum_chrome_version: '111' }));
   fs.mkdirSync(path.join(assets, 'google'), { recursive: true });
-  for (const name of screenshots) {
+  for (const shot of screenshots) {
+    const { name, color = '#336699' } = typeof shot === 'string' ? { name: shot } : shot;
     const png = path.join(assets, 'google', name);
-    const made = spawnSync('convert', ['-size', '1280x800', 'xc:#336699', `png:${png}`]);
+    const made = spawnSync('convert', ['-size', '1280x800', `xc:${color}`, `png:${png}`]);
     assert.equal(made.status, 0, String(made.stderr));
   }
   const result = spawnSync('bash', [script, project, out], {
     encoding: 'utf8',
-    env: { ...process.env, ASSETS_DIR: assets, MANIFEST: manifest },
+    env: { ...process.env, ASSETS_DIR: assets, MANIFEST: manifest, PRIVACY_MD: privacyMd },
   });
   const html = fs.existsSync(out) ? fs.readFileSync(out, 'utf8') : null;
-  return { result, html };
+  const privacyHtml = fs.existsSync(privacyOut) ? fs.readFileSync(privacyOut, 'utf8') : null;
+  return { result, html, privacyHtml, out, privacyOut };
 }
 
 test('build-website fills the page from the frontmatter and the intro prose', () => {
@@ -88,19 +93,75 @@ test('build-website escapes HTML in frontmatter text', () => {
 test('build-website uses the design\'s empty slot when there is no screenshot', () => {
   const { html } = build();
   assert.match(html, /<div class="sd-shot__empty caption">/);
-  assert.equal(html.includes('<img class="sd-shot__img"'), false);
+  assert.equal(html.includes('<img class="sd-shot__img'), false);
 });
 
 test('build-website embeds the screenshot as a WebP data URI', { skip: !hasConvert }, () => {
   const { result, html } = build({ screenshots: ['screenshot-001.png'] });
   assert.equal(result.status, 0, result.stderr);
-  assert.match(html, /<img class="sd-shot__img" src="data:image\/webp;base64,[A-Za-z0-9+/=]+" alt="Screenshot of Example Title" width="1280" height="800">/);
+  assert.match(html, /<img class="sd-shot__img sd-shot__slide is-active" src="data:image\/webp;base64,[A-Za-z0-9+/=]+" alt="Screenshot of Example Title" width="1280" height="800">/);
   assert.equal(html.includes('<div class="sd-shot__empty caption">'), false);
 });
 
-test('build-website shows exactly one screenshot, the first by name', { skip: !hasConvert }, () => {
-  const { html } = build({ screenshots: ['screenshot-002.png', 'screenshot-001.png'] });
-  assert.equal((html.match(/<img class="sd-shot__img"/g) || []).length, 1);
+function slideTags(html) {
+  return html.match(/<img class="sd-shot__img sd-shot__slide[^>]*>/g) || [];
+}
+
+// The dominant colour of a slide's embedded WebP, as [r, g, b].
+function slideColor(tag) {
+  const data = /base64,([A-Za-z0-9+/=]+)/.exec(tag)[1];
+  const file = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'wsoon-slide-')), 'slide.webp');
+  fs.writeFileSync(file, Buffer.from(data, 'base64'));
+  const read = spawnSync('convert', [file, '-format', '%[fx:int(255*p{20,20}.r)],%[fx:int(255*p{20,20}.g)],%[fx:int(255*p{20,20}.b)]', 'info:'], { encoding: 'utf8' });
+  return read.stdout.split(',').map(Number);
+}
+
+test('build-website embeds every screenshot as a slide, in name order', { skip: !hasConvert }, () => {
+  const { result, html } = build({
+    screenshots: [
+      { name: 'screenshot-002.png', color: '#cc0000' },
+      { name: 'screenshot-001.png', color: '#0000cc' },
+    ],
+  });
+  assert.equal(result.status, 0, result.stderr);
+  const slides = slideTags(html);
+  assert.equal(slides.length, 2);
+  const [first, second] = slides.map(slideColor);
+  assert.ok(first[2] > first[0], `slide 1 should be the blue screenshot-001, got ${first}`);
+  assert.ok(second[0] > second[2], `slide 2 should be the red screenshot-002, got ${second}`);
+});
+
+test('build-website marks only the first slide active and hides the rest from screen readers', { skip: !hasConvert }, () => {
+  const slides = slideTags(build({ screenshots: ['screenshot-001.png', 'screenshot-002.png', 'screenshot-003.png'] }).html);
+  assert.equal(slides.length, 3);
+  assert.match(slides[0], /sd-shot__slide is-active"/);
+  assert.equal(slides[0].includes('aria-hidden'), false);
+  for (const tag of slides.slice(1)) {
+    assert.equal(tag.includes('is-active'), false);
+    assert.match(tag, /aria-hidden="true"/);
+  }
+});
+
+test('build-website numbers the alt text when there are several screenshots', { skip: !hasConvert }, () => {
+  const several = slideTags(build({ screenshots: ['screenshot-001.png', 'screenshot-002.png'] }).html);
+  assert.match(several[0], /alt="Screenshot of Example Title \(1 of 2\)"/);
+  assert.match(several[1], /alt="Screenshot of Example Title \(2 of 2\)"/);
+  const one = slideTags(build({ screenshots: ['screenshot-001.png'] }).html);
+  assert.match(one[0], /alt="Screenshot of Example Title"/);
+});
+
+test('build-website embeds at most 5 screenshots, the Web Store limit', { skip: !hasConvert }, () => {
+  const names = [1, 2, 3, 4, 5, 6, 7].map((n) => `screenshot-00${n}.png`);
+  assert.equal(slideTags(build({ screenshots: names }).html).length, 5);
+});
+
+test('build-website ships the slideshow, the full-screen view and its close controls', () => {
+  const { html } = build();
+  assert.match(html, /<div class="sd-shot__stage">/);
+  assert.match(html, /<script>[\s\S]*setInterval\([\s\S]*4000\)[\s\S]*<\/script>/);
+  assert.match(html, /\.sd-lightbox__close/);
+  assert.match(html, /event\.key === 'Escape'/);
+  assert.match(html, /prefers-reduced-motion/);
 });
 
 test('build-website output is deterministic', { skip: !hasConvert }, () => {
@@ -127,4 +188,57 @@ test('build-website fails on an unresolved {{placeholder}} instead of publishing
   assert.notEqual(result.status, 0);
   assert.match(result.stderr, /\{\{version\}\}/);
   assert.equal(html, null);
+});
+
+const policy = '# Privacy policy\n\n[Back](index.html)\n\nWe collect **nothing** & keep nothing.\n\n## Sharing\n\nNone.';
+
+test('build-website builds privacy.html from PRIVACY.md, next to the index', () => {
+  const { result, privacyHtml } = build({ privacy: policy });
+  assert.equal(result.status, 0, result.stderr);
+  assert.match(privacyHtml, /<title>Privacy policy — Example Title<\/title>/);
+  assert.match(privacyHtml, /<h1 id="privacy-policy">Privacy policy<\/h1>/);
+  assert.match(privacyHtml, /We collect <strong>nothing<\/strong> &amp; keep nothing\./);
+  assert.match(privacyHtml, /<h2 id="sharing">Sharing<\/h2>/);
+});
+
+test('build-website keeps the link back to index.html in the policy', () => {
+  const { privacyHtml } = build({ privacy: policy });
+  assert.match(privacyHtml, /<a href="index\.html">Back<\/a>/);
+  assert.match(privacyHtml, /<a class="sd-link caption" href="index\.html">Home<\/a>/);
+});
+
+test('build-website links the index footer to the privacy page when PRIVACY.md exists', () => {
+  const { html, privacyHtml } = build({ privacy: policy });
+  assert.match(html, /<a class="sd-link" href="privacy\.html">Privacy<\/a>/);
+  assert.match(privacyHtml, /<a class="sd-link" href="privacy\.html">Privacy<\/a>/);
+});
+
+test('build-website has no Privacy link and builds no privacy page without PRIVACY.md', () => {
+  const { result, html, privacyHtml } = build();
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(html.includes('privacy.html'), false);
+  assert.equal(privacyHtml, null);
+});
+
+test('build-website leaves no unfilled placeholder in the privacy page', () => {
+  const { privacyHtml } = build({ privacy: policy });
+  assert.equal(/@@[A-Z_]+@@/.test(privacyHtml), false);
+  assert.equal(privacyHtml.includes('{{'), false);
+});
+
+test('build-website fails, publishing neither page, on a {{placeholder}} in PRIVACY.md', () => {
+  const { result, html, privacyHtml } = build({ privacy: 'Version {{version}}.' });
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /\{\{version\}\}/);
+  assert.equal(privacyHtml, null);
+  assert.equal(html, null);
+});
+
+test('build-website writes pages that a web server can read (not owner-only)', () => {
+  const { result, out, privacyOut } = build({ privacy: policy });
+  assert.equal(result.status, 0, result.stderr);
+  for (const file of [out, privacyOut]) {
+    const mode = fs.statSync(file).mode & 0o777;
+    assert.equal(mode & 0o044, 0o044, `${path.basename(file)} is mode ${mode.toString(8)}, expected group/other read`);
+  }
 });
