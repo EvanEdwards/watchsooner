@@ -4,6 +4,7 @@
 
 ## 2026-10
 
+- [!] #Commit 0.2.1: Minor retouch to css ✅ 2026-10-18
 - [!] #Commit 0.2.1: Added Features to site ✅ 2026-10-18
 - [!] #Commit 0.2.1: Various changes added to Changelog ✅ 2026-10-18
 - [!] #Commit 0.2.1: Screenshot added ✅ 2026-10-18
