@@ -4,6 +4,7 @@
 
 ## 2026-10
 
+- [!] #Commit 0.2.1: Minor pages update ✅ 2026-10-18
 - [!] #Commit 0.2.1: Getting release ready ✅ 2026-10-18
 - [x] Added tests for the website builder (59 tests total) ✅ 2026-10-18
 - [x] Added scripts/build-website.sh (bash) and website/: template plus the design's CSS and tokens ✅ 2026-10-18
