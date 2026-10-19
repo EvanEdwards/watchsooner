@@ -158,7 +158,7 @@ test('build-website embeds at most 5 screenshots, the Web Store limit', { skip: 
 test('build-website ships the slideshow, the full-screen view and its close controls', () => {
   const { html } = build();
   assert.match(html, /<div class="sd-shot__stage">/);
-  assert.match(html, /<script>[\s\S]*setInterval\([\s\S]*4000\)[\s\S]*<\/script>/);
+  assert.match(html, /<script>[\s\S]*var INTERVAL = 4000;[\s\S]*<\/script>/);
   assert.match(html, /\.sd-lightbox__close/);
   assert.match(html, /event\.key === 'Escape'/);
   assert.match(html, /prefers-reduced-motion/);
@@ -241,4 +241,34 @@ test('build-website writes pages that a web server can read (not owner-only)', (
     const mode = fs.statSync(file).mode & 0o777;
     assert.equal(mode & 0o044, 0o044, `${path.basename(file)} is mode ${mode.toString(8)}, expected group/other read`);
   }
+});
+
+test('build-website draws a 4px #ff0033 progress line along the bottom of the slideshow', () => {
+  const { html } = build();
+  const rule = /\.sd-shot__progress\{([^}]*)\}/.exec(html)[1];
+  assert.match(rule, /position:absolute/);
+  assert.match(rule, /bottom:0/);
+  assert.match(rule, /width:100%/);
+  assert.match(rule, /height:4px/);
+  assert.match(rule, /background:#ff0033/);
+  assert.match(rule, /transform:scaleX\(0\)/);
+  assert.match(rule, /transform-origin:left/);
+});
+
+test('build-website runs the progress line and the slide changes from one clock', () => {
+  const { html } = build();
+  assert.equal(html.includes('setInterval'), false, 'a separate timer would let the line drift from the slides');
+  assert.match(html, /requestAnimationFrame\(frame\)/);
+  assert.match(html, /show\(\(current \+ 1\) % slides\.length\);\s*elapsed = 0;/);
+  assert.match(html, /scaleX\(' \+ elapsed \/ INTERVAL/);
+});
+
+test('build-website only adds the progress line when there is more than one slide', () => {
+  const { html } = build();
+  assert.match(html, /if \(slides\.length > 1\) \{\s*progress = document\.createElement\('div'\);/);
+});
+
+test('build-website hides the progress line for reduced motion', () => {
+  const { html } = build();
+  assert.match(html, /@media \(prefers-reduced-motion:reduce\)\{[^@]*\.sd-shot__progress\{display:none\}/);
 });

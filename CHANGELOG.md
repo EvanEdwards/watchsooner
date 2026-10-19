@@ -4,6 +4,7 @@
 
 ## 2026-10
 
+- [x] Website: 4px #ff0033 progress line under the slideshow, in step with the 4 s rotation ✅ 2026-10-18
 - [x] Name is now "Watch Sooner" everywhere, including the store name ✅ 2026-10-18
 - [x] Fixed "Youtube" to "YouTube" in the docs, site and promo tile ✅ 2026-10-18
 - [x] Rebuilt docs/ for the new name and version 0.2.2 ✅ 2026-10-18

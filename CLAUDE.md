@@ -185,6 +185,15 @@ Behavior worth knowing:
   holds still for `prefers-reduced-motion`, while the pointer is over the frame, while
   the frame has keyboard focus, while the full-screen view is open and while the tab
   is hidden. A single screenshot just sits there.
+- **Progress line:** a 4px `#ff0033` bar along the bottom of the frame (the user's
+  colour; the design reserves red for the rose, so this is another deliberate
+  departure) fills left to right over one rotation (`scaleX` from the left) and resets
+  as the next screenshot appears. It exists only when there is more than one slide and
+  is hidden for `prefers-reduced-motion`. **The line and the slide changes run from one
+  `requestAnimationFrame` clock that only counts time while the slideshow is running.**
+  Don't replace it with a `setInterval` plus a CSS animation: they drift apart as soon
+  as the slideshow pauses (hover, focus, full-screen view), and a test guards this.
+  Frame steps are capped at 250 ms so a stalled tab can't jump the line.
 - **Full-screen view:** clicking (or Enter/Space on) the frame opens a fixed overlay
   with the current screenshot, contained to the viewport. A click anywhere, the X
   button (upper right) or Escape closes it. Page scroll is locked while it is open.
