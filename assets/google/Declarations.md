@@ -1,17 +1,8 @@
 # Chrome Web Store declarations
 
-Answers for the dashboard's **Privacy practices** tab, plus notes for the reviewer.
-They describe what the extension does today (checked against `src/` on 2026-10-18:
-no storage, no extension APIs, no background script, no declared permissions, and the
-only network calls are same-origin requests to youtube.com). **If the code changes in a
-way that touches any answer here, update this file and `PRIVACY.md` first.**
+Notes: 
+- The listing text is in `LISTING.md`. The privacy policy is `PRIVACY.md`, published at `https://evanedwards.github.io/watchsooner/privacy.html`.
 
-The listing text is in `LISTING.md`. The privacy policy is `PRIVACY.md`, published at
-`https://evanedwards.github.io/watchsooner/privacy.html`.
-
-The dashboard's category names and certification wording below are from memory of the
-current dashboard; the official page I could read describes the sections but does not
-list them. Match them to what the dashboard actually shows.
 
 ## Single purpose
 
@@ -21,8 +12,7 @@ Watch Sooner helps you browse and organize YouTube playlists. It adds tools abov
 
 ## Permission justification
 
-The manifest declares **no `permissions` and no `host_permissions`**. The only access is
-the content-script match `https://www.youtube.com/*`.
+The manifest declares **no `permissions` and no `host_permissions`**. The only access is the content-script match `https://www.youtube.com/*`.
 
 **Access to `https://www.youtube.com/*` (content scripts):**
 
@@ -34,6 +24,8 @@ Watch Sooner adds its controls to YouTube playlist pages and to the Playlists pa
 
 ```
 That script (src/page-bridge.js) needs to read YouTube's page configuration (window.ytcfg) to build the same requests youtube.com's own code makes, and a normal isolated content script cannot read it. It talks only to youtube.com, and only to read a playlist or, when the user clicks Save Sort, to reorder one or create a new private one.
+
+All operations use the user's account strictly for the user's YouTube data without ever sending anything elsewhere.  Changes to data is limited to operations the user could do manually with sufficient time.
 ```
 
 ## Remote code
@@ -72,15 +64,13 @@ Tick all three of the dashboard's statements. They are true as built:
 https://evanedwards.github.io/watchsooner/privacy.html
 ```
 
-Built from `PRIVACY.md` by `make website`, so publish the site (push `docs/`) before
-submitting, and confirm the URL loads.
 
 ## Notes for the reviewer (test instructions)
 
 ```
 Watch Sooner only runs on https://www.youtube.com/. To see it, sign in to YouTube and open a playlist page (for example https://www.youtube.com/playlist?list=WL, Watch Later) or watch any video from a playlist. The controls appear above the list: a "Watched %" slider, and, behind the three-dot button on the Playlists panel (or in its own row on the playlist page), a sort menu. No account or credentials are needed beyond a normal YouTube login, and none are required by the extension itself.
 
-Choosing a sort only changes the order on screen. "Save Sort" is the only action that changes data: it reorders that playlist or creates a new private playlist, and only when clicked. Please try it on a throwaway playlist. The extension collects nothing; the only network requests are same-origin requests to youtube.com.
+Choosing a sort only changes the order on screen. "Save Sort" is the only action that changes data: it reorders that playlist or creates a new private playlist, and only when clicked. The extension collects nothing; the only network requests are same-origin requests to youtube.com.
 ```
 
 ## Account-level fields (not part of the package)

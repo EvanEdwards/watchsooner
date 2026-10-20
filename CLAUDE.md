@@ -1,18 +1,12 @@
 # watchsooner — project notes
 
-Chrome extension (MV3) that improves YouTube's Watch Later experience. Details and
-feature list live in `project.md`; `README.md` is generated from it, don't edit it.
+Chrome extension (MV3) that improves YouTube's Watch Later experience. Details and feature list live in `project.md`; `README.md` is generated from it, don't edit it or `README.md`
 
-`CHANGELOG.md` entries go newest-first: add new lines at the top of the day's list,
-not the bottom.
+`CHANGELOG.md` entries go newest-first: add new lines at the top of the day's list, not the bottom.  System may have `clog` which adds entries automatically with `clog -- "Changes to log"`  All changes should be terse: 180 characters or less, ideally 80 characters or less.
 
-When writing scripts, prefer bash over Node. (Unit tests still use Node's built-in
-runner, and the extension code itself is JavaScript.)
+When writing scripts, prefer bash over Node. (Unit tests still use Node's built-in runner, and the extension code itself is JavaScript.)
 
-When testing live with the Claude in Chrome extension (`mcp__claude-in-chrome__*`),
-leave the browser tab/session open when done — don't close it with
-`tabs_close_mcp`. The user wants to keep it for follow-up work. Reuse the open tab
-on later tests instead of creating a new one.
+When testing live with the Claude in Chrome extension (`mcp__claude-in-chrome__*`), leave the browser tab/session open when done — don't close it with `tabs_close_mcp`. The user wants to keep it for follow-up work. Reuse the open tab on later tests instead of creating a new one.
 
 ## Layout
 

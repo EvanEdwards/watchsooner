@@ -38,7 +38,12 @@ body{background:var(--surface-100)}
 <div class="sd-page">
   <header class="sd-nav">
     <a class="sd-wordmark" href="#"><span class="sd-rose-tile"><span class="sd-rose" role="img" aria-label="Cheshire Hall rose"></span></span><span>Cheshire Hall<span class="sd-wordmark__dot">.</span></span></a>
-    <a class="sd-link caption" href="@@CHANGELOG_URL@@">Changelog</a>
+    <span>
+      <span class="sd-link caption">@@PRIVACY_LINK@@</span> &nbsp;
+      <a class="sd-link caption" href="@@SOURCE_URL@@">Source</a> &nbsp;
+      <a class="sd-link caption" href="@@CHANGELOG_URL@@">Changelog</a> &nbsp;
+      <a class="sd-link caption" href="https://ko-fi.com/cheshirehall">Donate</a>
+    </span>
   </header>
   <main>
     <section class="sd-hero">
@@ -72,7 +77,7 @@ body{background:var(--surface-100)}
     </section>
   </main>
   <footer class="sd-footer caption">
-    <span>© @@AUTHOR@@</span>
+    <span>© 2026 @@AUTHOR@@</span>
     <span class="sd-footer__links">@@AUTHOR_LINK@@@@PRIVACY_LINK@@</span>
   </footer>
 </div>
@@ -186,6 +191,15 @@ body{background:var(--surface-100)}
     if (event.key === 'Escape') closeLightbox();
   });
 }());
+</script>
+<script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+<script>
+  kofiWidgetOverlay.draw('cheshirehall', {
+    'type': 'floating-chat',
+    'floating-chat.donateButton.text': 'Donate',
+    'floating-chat.donateButton.background-color': '#fa0',
+    'floating-chat.donateButton.text-color': '#111'
+  });
 </script>
 </body>
 </html>

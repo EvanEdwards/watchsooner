@@ -10,7 +10,7 @@ Filter and browse your YouTube playlists with advanced tools.
 ## Details
 
 
-**Watch Sooner** is a small browser helper for anyone who uses YouTube's "Watch Later" list or other playlists as their personal queue. It's built for the reality of a Watch Later list that grows faster than you can clean it out, making it easier to see what's actually in there, skip past videos you've already mostly watched, and browse your list comfortably instead of squinting through a cramped little panel. The goal is simple: help you actually get back to the videos you saved, instead of losing them in an ever-growing pile.
+**Watch Sooner** is a Chrome Extension for anyone who uses YouTube's "Watch Later" list or other playlists as their personal queue. It's built for the reality of a playlist that grows faster than you can clean it out, making it easier to see what's actually in there, skip past videos you've already mostly watched, and browse your list comfortably instead of squinting through a cramped little panel. The goal is simple: help you actually get back to the videos you saved, instead of losing them in an ever-growing pile.
 
 **Privacy:** This is a Chrome Extension that only applies to YouTube.com and is focused on playlists.  We do not collect any information whatsoever and this is open source without ads.
 
@@ -24,6 +24,10 @@ Watch Sooner adds a few tools right above your list, on the playlist page (Watch
 - **See the whole panel.**  The "Show all" button stretches the Playlists panel to show every video, and the page scrolls instead of that tiny box.  Click it again to put it back.
 - **Sort any playlist.**  Pick a sort and Watch Sooner loads the entire list and reorders it right on the page: by channel, title, duration, how much you've watched, or when it was published.  Publication time is approximate, since YouTube only says "6y ago".  This is a temporary view, so nothing changes in your playlist until you say so.  The panel only keeps about 200 videos handy, so sort from the playlist page when you want all of them.
 - **Keep a sort.**  Happy with the order?  "Save Sort" makes it the real order of your playlist, using as few moves as possible, and checks YouTube's result afterward.  Big reorders ask first, and if a sorted copy would be faster, it offers to make one instead.
+
+## Support
+
+[Donate here to support the project!](https://ko-fi.com/cheshirehall)  Make sure to mention Watch Sooner in the message.
 
 ---
 
